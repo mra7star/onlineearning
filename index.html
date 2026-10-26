@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RewardHub - #1 Trusted Micro-Task & Rewards Platform</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes ticker {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-50%); }
+        }
+        .ticker-wrapper {
+            overflow: hidden;
+            height: 50px;
+        }
+        .ticker-track {
+            animation: ticker 500s linear infinite;
+        }
+        .ticker-track:hover {
+            animation-play-state: paused;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- LANDING PAGE VIEW -->
+    <div id="landing-screen" class="flex-grow flex flex-col">
+        <header class="border-b border-slate-800/60 bg-slate-900/50 backdrop-blur px-6 py-4 flex justify-between items-center max-w-6xl mx-auto w-full">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-coins text-yellow-400 text-xl"></i>
+                <span class="font-bold text-lg tracking-wide">Reward<span class="text-yellow-400">Hub</span></span>
+            </div>
+            <div>
+                <button onclick="showAuth('login')" class="text-xs font-semibold px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition mr-2">Login</button>
+                <button onclick="showAuth('signup')" class="text-xs font-semibold px-4 py-2 rounded-lg bg-yellow-400 hover:bg-yellow-500 text-slate-950 transition">Get Started</button>
+            </div>
+        </header>
+
+        <!-- TOP HOME PAGE BANNER AD -->
+        <div class="max-w-4xl mx-auto w-full px-6 pt-6">
+            <div class="bg-slate-900/60 border border-yellow-400/20 rounded-xl p-3 text-center min-h-[90px] flex flex-col justify-center items-center">
+                <span class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Sponsored Advertisement</span>
+                <div class="text-xs text-yellow-400/70 font-mono">[ ADSTERRA / MONETAG HOME BANNER ]</div>
+            </div>
+        </div>
+
+        <section class="max-w-4xl mx-auto text-center px-6 py-12 flex-grow flex flex-col justify-center">
+            <div class="inline-flex items-center gap-2 bg-yellow-400/10 border border-yellow-400/20 text-yellow-400 text-xs px-3 py-1.5 rounded-full mx-auto mb-6">
+                <i class="fa-solid fa-shield-halved"></i> 100% Secure & Verified Platform • Over $450,000+ Paid Out
+            </div>
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
+                Complete Simple Tasks & Earn <span class="text-yellow-400">Real Cash Daily</span>
+            </h1>
+            <p class="text-slate-400 text-sm md:text-base max-w-2xl mx-auto mb-8">
+                Join thousands of users worldwide. Perform micro-tasks, view sponsor offers, refer friends, and build your daily income effortlessly.
+            </p>
+            <div class="flex justify-center gap-4">
+                <button onclick="showAuth('signup')" class="bg-yellow-400 hover:bg-yellow-500 text-slate-950 font-bold px-8 py-3.5 rounded-xl shadow-lg shadow-yellow-400/10 transition text-sm">Start Earning Now</button>
+                <button onclick="showAuth('login')" class="bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-200 font-bold px-8 py-3.5 rounded-xl transition text-sm">Existing User Login</button>
+            </div>
+
+            <!-- LIVE PAYOUT TICKER (Massive Dynamic Rotation) -->
+            <div class="mt-12 bg-slate-900/80 border border-slate-800/80 rounded-2xl p-4 max-w-xl mx-auto w-full shadow-xl">
+                <div class="text-xs uppercase font-semibold text-slate-400 mb-2 flex items-center justify-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Live Payout Ticker
+                </div>
+                <div class="ticker-wrapper relative">
+                    <div id="ticker-container" class="ticker-track flex flex-col space-y-3 text-xs text-slate-300"></div>
+                </div>
+            </div>
+
+            <!-- DYNAMIC ROTATING TESTIMONIALS -->
+            <div id="testimonials-container" class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-4 text-left"></div>
+
+            <!-- BOTTOM HOME PAGE BANNER AD -->
+            <div class="mt-12 bg-slate-900/60 border border-yellow-400/20 rounded-xl p-4 text-center">
+                <span class="text-[10px] text-slate-500 uppercase tracking-widest mb-1 block">Sponsored Content</span>
+                <div class="text-xs text-yellow-400/70 font-mono">[ ADSTERRA / MONETAG NATIVE BANNER ]</div>
+            </div>
+        </section>
+
+        <footer class="border-t border-slate-900 py-6 text-center text-xs text-slate-500">
+            &copy; 2026 RewardHub. All rights reserved.
+        </footer>
+    </div>
+
+    <!-- AUTH MODAL / SCREEN -->
+    <div id="auth-screen" class="hidden flex-grow flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-2xl w-full max-w-md relative">
+            <button onclick="backToLanding()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-200 text-sm"><i class="fa-solid fa-xmark"></i></button>
+            <div class="text-center mb-6">
+                <i class="fa-solid fa-coins text-yellow-400 text-4xl mb-2"></i>
+                <h1 class="text-2xl font-bold tracking-wide">Reward<span class="text-yellow-400">Hub</span></h1>
+                <p id="auth-subtitle" class="text-slate-400 text-sm mt-1">Access your dashboard</p>
+            </div>
+
+            <div class="flex border-b border-slate-800 mb-6">
+                <button onclick="switchTab('login')" id="tab-login" class="flex-1 pb-3 font-semibold text-yellow-400 border-b-2 border-yellow-400 transition text-sm">Login</button>
+                <button onclick="switchTab('signup')" id="tab-signup" class="flex-1 pb-3 font-semibold text-slate-400 transition text-sm">Sign Up</button>
+            </div>
+
+            <form onsubmit="handleAuth(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Email Address</label>
+                    <input type="email" id="email" required class="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-yellow-400 text-slate-100" placeholder="name@example.com">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Password</label>
+                    <input type="password" id="password" required class="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-yellow-400 text-slate-100" placeholder="••••••••">
+                </div>
+                <div id="auth-error" class="text-red-400 text-xs hidden"></div>
+                <button type="submit" id="auth-btn" class="w-full bg-yellow-400 hover:bg-yellow-500 text-slate-950 font-bold py-3 rounded-lg transition shadow-lg shadow-yellow-400/10 text-sm">Login to Account</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- DASHBOARD SECTION -->
+    <div id="dashboard-screen" class="hidden flex-grow flex flex-col">
+        <header class="bg-slate-900 border-b border-slate-800 px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-coins text-yellow-400 text-xl"></i>
+                <span class="font-bold text-lg tracking-wide">Reward<span class="text-yellow-400">Hub</span></span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-2 bg-slate-950 border border-slate-800 px-3 py-1.5 rounded-lg text-sm">
+                    <span class="text-slate-400 text-xs">Currency:</span>
+                    <select id="currency-select" onchange="changeCurrency()" class="bg-slate-950 text-yellow-400 font-bold focus:outline-none cursor-pointer text-xs">
+                        <option value="USD">USD ($)</option>
+                        <option value="PKR">PKR (Rs)</option>
+                        <option value="INR">INR (₹)</option>
+                        <option value="GBP">GBP (£)</option>
+                        <option value="AED">AED (Dh)</option>
+                    </select>
+                </div>
+                <div class="bg-slate-950 border border-slate-800 px-4 py-1.5 rounded-full text-sm">
+                    <span class="text-slate-400">Balance:</span> <span id="user-balance" class="font-bold text-yellow-400">$0.00</span>
+                </div>
+                <button onclick="logout()" class="text-slate-400 hover:text-red-400 transition" title="Logout"><i class="fa-solid fa-right-from-bracket text-lg"></i></button>
+            </div>
+        </header>
+
+        <main class="flex-grow max-w-5xl w-full mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- Left Panel -->
+            <div class="space-y-6">
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl">
+                    <h2 class="text-xs uppercase tracking-wider text-slate-400 mb-2">Account Overview</h2>
+                    <div class="text-xl font-bold text-slate-100 truncate" id="display-email">user@mail.com</div>
+                    <div class="mt-4 pt-4 border-t border-slate-800 space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Tasks Completed:</span>
+                            <span id="tasks-count" class="font-semibold text-slate-200">0 / 25</span>
+                        </div>
+                        <div id="ref-box-display" class="flex justify-between hidden">
+                            <span class="text-slate-400">Referrals:</span>
+                            <span id="referral-count-display" class="font-semibold text-yellow-400">0 / 10</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl">
+                    <h2 class="text-xs uppercase tracking-wider text-slate-400 mb-3">Quick Navigation</h2>
+                    <div class="space-y-2">
+                        <button onclick="switchView('tasks')" id="nav-tasks" class="w-full text-left px-4 py-2.5 rounded-lg bg-yellow-400/15 text-yellow-400 font-medium text-sm transition"><i class="fa-solid fa-list-check mr-2"></i> Earn Tasks</button>
+                        <button onclick="switchView('referral')" id="nav-referral" class="w-full text-left px-4 py-2.5 rounded-lg text-slate-500 bg-slate-950 font-medium text-sm transition cursor-not-allowed" disabled><i class="fa-solid fa-lock mr-2" id="step2-icon"></i> Step 2 (Locked)</button>
+                        <button onclick="switchView('withdraw')" id="nav-withdraw" class="w-full text-left px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-slate-200 font-medium text-sm transition"><i class="fa-solid fa-wallet mr-2"></i> Withdraw Funds</button>
+                    </div>
+                </div>
+
+                <!-- SIDEBAR STICKY BANNER AD -->
+                <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-2xl text-center min-h-[250px] flex flex-col justify-center items-center">
+                    <span class="text-[10px] text-slate-500 uppercase tracking-widest mb-2">Sponsored Partner</span>
+                    <div class="text-xs text-yellow-400/70 font-mono">[ SIDEBAR BANNER AD ]</div>
+                </div>
+            </div>
+
+            <!-- Right Dynamic Panel -->
+            <div class="md:col-span-2 space-y-6">
+                
+                <!-- Tasks View -->
+                <div id="view-tasks" class="bg-slate-900 border border-slate-800 p-6 rounded-2xl">
+                    <h2 class="text-lg font-bold mb-2 flex items-center"><i class="fa-solid fa-bolt text-yellow-400 mr-2"></i> Available Micro-Tasks (25 Available)</h2>
+                    <p class="text-xs text-slate-400 mb-4">Watch each ad for <span class="text-yellow-400 font-bold">1 minute</span> to earn <span class="text-yellow-400 font-bold">+$0.55</span> per task.</p>
+                    
+                    <div class="mb-4 bg-slate-950 border border-yellow-400/20 p-3 rounded-xl text-center">
+                        <span class="text-[10px] text-slate-500 uppercase tracking-widest mb-1 block">Featured Partner Ad</span>
+                        <div class="text-xs text-yellow-400/70 font-mono">[ TASKS TOP BANNER AD ]</div>
+                    </div>
+
+                    <div id="task-timer-box" class="hidden mb-6 bg-slate-950 border border-yellow-400/30 p-4 rounded-xl text-center">
+                        <div class="text-yellow-400 font-bold text-sm mb-1"><i class="fa-solid fa-clock animate-spin mr-1"></i> Task Ad in Progress... Please stay on page</div>
+                        <div id="timer-countdown" class="text-2xl font-extrabold text-white my-2">60s</div>
+                        <p class="text-[11px] text-slate-400">Other tasks are locked while timer is running.</p>
+                    </div>
+
+                    <div id="tasks-list-container" class="space-y-3 max-h-[380px] overflow-y-auto pr-2"></div>
+
+                    <div class="mt-4 bg-slate-950 border border-slate-800 p-3 rounded-xl text-center">
+                        <span class="text-[10px] text-slate-500 uppercase tracking-widest mb-1 block">Sponsored Banner</span>
+                        <div class="text-xs text-yellow-400/70 font-mono">[ TASKS BOTTOM BANNER AD ]</div>
+                    </div>
+                </div>
+
+                <!-- Referral View (Step 2) -->
+                <div id="view-referral" class="hidden bg-slate-900 border border-slate-800 p-6 rounded-2xl">
+                    <h2 class="text-lg font-bold mb-2 flex items-center"><i class="fa-solid fa-users text-yellow-400 mr-2"></i> Step 2: Referral Program</h2>
+                    <p class="text-xs text-slate-400 mb-6">Share your unique link with friends. You need at least <span class="text-yellow-400 font-bold">10 referrals</span> to unlock payouts.</p>
+                    
+                    <div class="mb-6 bg-slate-950 border border-yellow-400/20 p-3 rounded-xl text-center">
+                        <span class="text-[10px] text-slate-500 uppercase tracking-widest mb-1 block">Sponsored Content</span>
+                        <div class="text-xs text-yellow-400/70 font-mono">[ STEP 2 PAGE BANNER AD ]</div>
+                    </div>
+
+                    <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl mb-6">
+                        <label class="block text-xs text-slate-400 mb-2">Your Unique Referral Link</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="ref-link" readonly class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 text-xs text-slate-300 focus:outline-none" value="">
+                            <button onclick="copyRefLink()" class="bg-slate-800 hover:bg-slate-700 text-xs px-4 py-2.5 rounded-lg font-medium transition">Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center bg-slate-950 border border-slate-800 p-4 rounded-xl text-sm">
+                        <span class="text-slate-400">Total Referrals Completed:</span>
+                        <span id="ref-progress-text" class="font-bold text-yellow-400">0 / 10</span>
+                    </div>
+                </div>
+
+                <!-- Withdraw View -->
+                <div id="view-withdraw" class="hidden bg-slate-900 border border-slate-800 p-6 rounded-2xl">
+                    <h2 class="text-lg font-bold mb-2 flex items-center"><i class="fa-solid fa-wallet text-yellow-400 mr-2"></i> Request Payout</h2>
+                    <p class="text-xs text-slate-400 mb-6">Minimum withdrawal limit is <span class="text-yellow-400 font-bold">$50.00</span>.</p>
+                    
+                    <div class="mb-6 bg-slate-950 border border-yellow-400/20 p-3 rounded-xl text-center">
+                        <span class="text-[10px] text-slate-500 uppercase tracking-widest mb-1 block">High CPM Sponsor Ad</span>
+                        <div class="text-xs text-yellow-400/70 font-mono">[ WITHDRAW PAGE BANNER AD ]</div>
+                    </div>
+
+                    <div class="bg-slate-950 border border-slate-800 p-5 rounded-xl mb-6">
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-slate-400">Current Balance:</span>
+                            <span id="withdraw-current" class="font-bold text-yellow-400">$0.00</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-400">Required Limit:</span>
+                            <span class="font-bold text-slate-200">$50.00</span>
+                        </div>
+                        <div class="w-full bg-slate-800 h-2 rounded-full mt-4 overflow-hidden">
+                            <div id="progress-bar" class="bg-yellow-400 h-full w-[0%] transition-all duration-500"></div>
+                        </div>
+                    </div>
+
+                    <div id="withdraw-status-box" class="hidden mb-6 p-4 rounded-xl border text-xs"></div>
+
+                    <form onsubmit="requestWithdraw(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Select Payment Method</label>
+                            <select class="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-yellow-400 text-slate-100">
+                                <option>Easypaisa / JazzCash</option>
+                                <option>Bank Transfer (Pakistan / International)</option>
+                                <option>USDT (TRC20 Crypto)</option>
+                                <option>PayTM / UPI (India)</option>
+                                <option>STC Pay (Saudi Arabia)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Account Number / Wallet ID</label>
+                            <input type="text" required class="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-yellow-400 text-slate-100" placeholder="Enter account details">
+                        </div>
+                        <button type="submit" class="w-full bg-yellow-400 hover:bg-yellow-500 text-slate-950 font-bold py-3 rounded-lg transition shadow-lg shadow-yellow-400/10 text-sm">Submit Withdrawal Request</button>
+                    </form>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        const ADSTERRA_LINK = "https://YOUR_ADSTERRA_DIRECT_LINK_HERE";
+
+        const rates = { USD: 1, PKR: 278, INR: 83.5, GBP: 0.79, AED: 3.67 };
+        const symbols = { USD: '$', PKR: 'Rs ', INR: '₹', GBP: '£', AED: 'Dh ' };
+        let currentCurrency = 'USD';
+        let isTaskRunning = false;
+
+        // Massive pool of 60+ 101% Human & Realistic Testimonials (provided by user)
+        const allTestimonials = [
+            { text: "Pehle 2 din samjh nahi aya par jab 1-minute timer complete ho kar balance add hua toh maza aa gaya. Simple aur best site hai.", name: "Usman Raza", city: "Rawalpindi" },
+            { text: "Honestly best experience so far! Daily tasks complete karna bilkul easy hai, bus 10 referrals ka target complete karna tha.", name: "Sana Tariq", city: "Lahore" },
+            { text: "Bhai Easypaisa par payout request laga di hai. Interface bohot clean hai aur currency convert karne ka option sab se zabardast hai.", name: "Ali Hassan", city: "Gujranwala" },
+            { text: "I was not sure at first, but after completing 25 tasks daily, the progress bar updated smoothly. Really great platform!", name: "Zain Malik", city: "Islamabad" },
+            { text: "Riyadh se STC Pay ke zariye use kar raha hoon. 1-minute ad watch time wala rule acha hai taake fake clicks na hon.", name: "Khalid Mehmood", city: "Riyadh, KSA" },
+            { text: "Bhai WhatsApp groups mein link share kiya toh 10 friends complete ho gaye. Ab withdrawal approval ka wait hai, outstanding work!", name: "Farhan Ali", city: "Peshawar" },
+            { text: "Dubai mein part-time timepass ke liye start kiya tha par ab daily routing ban chuki hai. USDT payout is super smooth.", name: "Rashid Khan", city: "Dubai, UAE" },
+            { text: "Pakistan mein aisi genuine tasks wali site kam hi milti hain. Balance PKR mein dekh kar bohot khushi hui.", name: "Ayesha Khan", city: "Sialkot" },
+            { text: "Super straightforward process. Watch ad button clear hai aur counter smoothly work کرتا hai. Highly satisfied!", name: "David Miller", city: "London, UK" },
+            { text: "India se UPI payment option dekh kar maza aa gaya. Task limit $50 genuine lagti hai, no fake promises.", name: "Amit Patel", city: "Delhi, India" },
+            { text: "Mera dost refer kar ke gaya tha, pehle laga time waste hoga par dashboard live ticker dekh kar trust ho gaya.", name: "Kashif Niaz", city: "Faisalabad" },
+            { text: "No spam, no extra ads redirection! Purely focused tasks and clean counter system. Love from Karachi!", name: "Fatima Noor", city: "Karachi" },
+            { text: "University break mein daily 25 tasks complete kar leta hoon. Pocket money ke liye zabardast scene hai.", name: "Danyaal Sheikh", city: "Lahore" },
+            { text: "STC Pay option works like a charm for Gulf residents. 1-minute task delay keeps the system transparent.", name: "Fahad Al-Harbi", city: "Jeddah, KSA" },
+            { text: "Bhai JazzCash par withdrawal request lagayi hai. Live feed mein baki logon ke payouts dekh kar maza aya.", name: "Zeeshan Safdar", city: "Multan" },
+            { text: "Working perfectly on mobile browser too. Fast UI and no lags while watching ads or checking balance.", name: "Sofia Ahmed", city: "Birmingham, UK" },
+            { text: "Pehle referral link share karne mein jhijhak thi, par 5 doston ne khud join kar liya status dekh kar.", name: "Talha Mushtaq", city: "Hyderabad" },
+            { text: "PayTM transaction integration makes it super smooth for Indian users. Smooth work!", name: "Priya Sharma", city: "Mumbai, India" },
+            { text: "1-minute limit is great for fair play. Payout ticker real-time update hota dekh kar dil khush ho gaya.", name: "Hassan Raza", city: "Quetta" },
+            { text: "Very easy to use layout. Modern dark design and clear button options. 10/10 experience so far.", name: "Oliver Scott", city: "Manchester, UK" },
+            { text: "Bhai genuinely acha system hai. Balance section mein instant addition hoti hai har task ke baad.", name: "Bilal Kasuri", city: "Gujrat" },
+            { text: "Abu Dhabi se operate kar raha hoon, USDT withdrawal option is the best thing about this site.", name: "Mohammed Saif", city: "Abu Dhabi, UAE" },
+            { text: "Acha lagta hai jab daily routine task complete hone par progress bar full ho jati hai.", name: "Mariam Baig", city: "Islamabad" },
+            { text: "Very smooth mobile responsive site. Simple steps: watch 1 min, balance update, simple and neat!", name: "James Wilson", city: "Chicago, US" },
+            { text: "Easypaisa option hone se tension khatam ho gayi. Local payment methods allow karne par shukriya!", name: "Zainab Chaudhry", city: "Bahawalpur" },
+            { text: "Saudi Arabia se STC Pay ke through apply kiya hai. Task countdown system bohot proper hai.", name: "Bandar Al-Otaibi", city: "Dammam, KSA" },
+            { text: "Facebook groups par 10 referrals easily mil gaye. Ab pending withdrawal clear hone ka wait hai.", name: "Hamza Abbasi", city: "Rawalpindi" },
+            { text: "Great concept! Clean layout and clear conversion rate between USD and local currency.", name: "Emily Watson", city: "Bristol, UK" },
+            { text: "Bhai fake samajh raha tha pehle par 1 minute ad dekhne ke baad 100% genuine laga.", name: "Ali Raza", city: "Sheikhupura" },
+            { text: "Simple interface and transparent policy. Minimum threshold $50 is very practical.", name: "Rahul Verma", city: "Bangalore, India" },
+            { text: "Daily 25 tasks wali restriction achi hai taake system over-load na ho. Genuine platform!", name: "Sadaf Parvez", city: "Karachi" },
+            { text: "Worked smoothly on iPhone XR browser. Timer and ad view sync is perfectly designed.", name: "Michael Brown", city: "New York, US" },
+            { text: "JazzCash account balance update feature bohot fast kaam karta hai. Thumbs up!", name: "Usman Ghani", city: "Kasur" },
+            { text: "UAE Mashreq Bank transfer option setup is very clear. Got my 10 referrals easily.", name: "Zayed Mansoor", city: "Sharjah, UAE" },
+            { text: "Rozana subah chai ke sath 10-15 tasks nibata hoon. Highly user-friendly dashboard.", name: "Kashif Ali", city: "Sargodha" },
+            { text: "The countdown timer prevents system abuse, which proves this project is long-term.", name: "George Thomas", city: "London, UK" },
+            { text: "Easypaisa withdrawal request added successfully. Waiting for final confirmation!", name: "Nimra Sheikh", city: "Lahore" },
+            { text: "India mein GPay / PhonePe options hone se registration super fast ho gayi.", name: "Deepak Kumar", city: "Pune, India" },
+            { text: "Bhai ticker par apne doston ke payouts dekh kar khud registration ki hai. Outstanding!", name: "Tariq Jameel", city: "Mardan" },
+            { text: "Awesome layout! Converting PKR to USD on the fly gives a broad overview of earnings.", name: "Jessica Taylor", city: "London, UK" },
+            { text: "College group mein link drop kiya tha, 1 hour mein 10 referrals done ho gaye. Super fast!", name: "Shahzaib Khan", city: "Islamabad" },
+            { text: "STC Pay payout option for KSA users is a blessing. Super smooth navigation.", name: "Sultan Al-Ghamdi", city: "Riyadh, KSA" },
+            { text: "Daily payout feed dekh kar banda waqai motivate ho jata hai. Clean work guys!", name: "Asad Mahmood", city: "Rawalpindi" },
+            { text: "USDT deposit/withdrawal support makes this platform global. Highly professional site.", name: "Robert Taylor", city: "Texas, US" },
+            { text: "Bhai 1 min ad wala rule strict hai par bilkul legit lagta hai. Pocket money set ho gayi.", name: "Waqas Ahmed", city: "Okara" },
+            { text: "Interface clean hai aur unnecessary popups nahi aate, jo ke sab se badi baat hai.", name: "Hira Salman", city: "Karachi" },
+            { text: "Task progress bar fills smoothly. Very satisfying user interface!", name: "Noah King", city: "Leeds, UK" },
+            { text: "India mein UPI transaction setup instantly active ho gaya. Amazing execution!", name: "Neha Gupta", city: "Delhi, India" },
+            { text: "Bhai 25 tasks complete ho gaye hain for today. Waiting for tomorrow's quota!", name: "Farooq Azam", city: "Multan" },
+            { text: "Dubai mein part-time crypto payout sites dhund raha tha, glad I found this one.", name: "Mariam Khalaf", city: "Dubai, UAE" },
+            { text: "JazzCash wallet mein automatic calculation options bohot intuitive hain.", name: "Haris Butt", city: "Lahore" },
+            { text: "Love the simplicity. No extra fluff, just clear tasks and real-time status updates.", name: "Sarah Jenkins", city: "Miami, US" },
+            { text: "Status update feature bohot transparent hai. Easy to monitor daily progress.", name: "Saad Imran", city: "Peshawar" },
+            { text: "STC Pay integrated seamless lag raha hai. Saudi users ke liye best setup.", name: "Nasser Al-Dossary", city: "Khobar, KSA" },
+            { text: "Bhai referral counter live update hota hai. 10 complete hotay hi button unlock ho gaya!", name: "Zubair Latif", city: "Faisalabad" },
+            { text: "Cleanest design I've seen in task sites. Everything is self-explanatory.", name: "Jack Robinson", city: "Glasgow, UK" },
+            { text: "Easypaisa options for local Pakistani users make it super accessible for everyone.", name: "Mahnoor Fatima", city: "Islamabad" },
+            { text: "PayTM method is smooth and fast. Really impressed by the team work behind this.", name: "Rohit Verma", city: "Jaipur, India" },
+            { text: "Bhai total 25/25 tasks done today! Referral system pe thora time laga par worth it tha.", name: "Shoaib Malik", city: "Sialkot" },
+            { text: "Wise transfer support for European users is a major plus point. Highly rated!", name: "Isla Davies", city: "Edinburgh, UK" },
+            { text: "Direct bank transfer option for Pakistan is smooth. Balance PKR mein convert ho jata hai.", name: "Adeel Ur Rehman", city: "Karachi" },
+            { text: "Riyadh mein doston ko recommend kiya hai. Sab ka feedback positive hai.", name: "Mansour Al-Shihri", city: "Riyadh, KSA" },
+            { text: "1-minute watch timer operates with high accuracy. No glitches encountered so far.", name: "William Clark", city: "Ohio, US" },
+            { text: "Bhai pending status update bohot fast reflection deta hai. Super reliable dashboard.", name: "Noman Bashir", city: "Rawalpindi" },
+            { text: "Acha lagta hai jab local currency PKR automatic detect ho kar dashboard par aye.", name: "Kiran Shahzadi", city: "Lahore" },
+            { text: "Very smooth USDT portal integration. Super effortless payout processing.", name: "Karan Joshi", city: "Mumbai, India" },
+            { text: "Tasks limits keep the platform authentic. Daily 25 ads setup is well balanced.", name: "Charlie Wright", city: "Liverpool, UK" },
+            { text: "Bhai 10 referrals WhatsApp status se hi ho gaye. Simple links share karne par fast join hua.", name: "Ahsan Iqbal", city: "Rahim Yar Khan" },
+            { text: "Easypaisa payment details enter karna super simple tha. Loved the flow!", name: "Sunaina Malik", city: "Gujranwala" },
+            { text: "UAE Mashreq account details verified. Payout status shows in queue cleanly.", name: "Hamdan Al-Falasi", city: "Dubai, UAE" },
+            { text: "Bhai fake websites se thak chuka tha, yeh platform waqai disciplined aur clean hai.", name: "Imran Akram", city: "Larkana" },
+            { text: "Timer countdown gives true remote work vibes. Very neat implementation!", name: "Sophia Lewis", city: "London, UK" },
+            { text: "Task counter is bug-free. Completed today's limit without any hassle.", name: "Zeeshan Ali", city: "Abbottabad" },
+            { text: "STC Pay and Al Rajhi transfer options are solid for KSA residents.", name: "Saud Al-Anzi", city: "Tabuk, KSA" },
+            { text: "Bhai payout ticker par apna city dekh kar aur confidence badh gaya.", name: "Atif Rasheed", city: "Chiniot" },
+            { text: "Simple, elegant and straightforward. No unnecessary survey forms!", name: "Ashley Evans", city: "London, UK" },
+            { text: "Bank transfer directly in PKR without extra conversion charges. Super setup!", name: "Mehwish Mukhtar", city: "Karachi" },
+            { text: "Google Pay integration works fine for Indian side users. Thumbs up!", name: "Vikram Singh", city: "Ahmedabad, India" },
+            { text: "Bhai 1-minute timer complete hone ke baad success toast message bohot satisfying hai.", name: "Yasir Hameed", city: "Bhakkar" },
+            { text: "USDT TRC20 transfer support is fast and cheap. Great choice for crypto users.", name: "James Anderson", city: "Florida, US" },
+            { text: "JazzCash account balance update ho gaya. Clean & minimal UI design.", name: "Sajid Mahmood", city: "Jhelum" },
+            { text: "WhatsApp community link sharing worked like magic for completing 10 referrals.", name: "Rida Tariq", city: "Islamabad" },
+            { text: "Smooth UI, 0 lag, clear instructions. Everything works as promised.", name: "Harry Walker", city: "London, UK" },
+            { text: "Saudi Arabia se test kar raha hoon, total 25 tasks smoothly finish hue.", name: "Bandar Al-Hamad", city: "Madinah, KSA" },
+            { text: "Bhai minimum threshold $50 easily achieve ho jata hai agar daily tasks karo toh.", name: "Shahid Khan", city: "Swat" },
+            { text: "Currency switcher PKR / USD option is extremely handy for quick math.", name: "Ananya Roy", city: "Kolkata, India" },
+            { text: "Easypaisa method for quick payouts is really appreciated. Smooth flow!", name: "Rimsha Iqbal", city: "Lahore" },
+            { text: "1 min task delay makes complete sense for network stability. Excellent UI!", name: "Amelia Hill", city: "Bristol, UK" },
+            { text: "Bhai 100% genuine vibe aati hai jab account balance live increase hota hai.", name: "Moazzam Ali", city: "Mianwali" },
+            { text: "USDT payout ticker updates nicely. Everything feels solid and secure.", name: "Fahad Al-Qasim", city: "Riyadh, KSA" },
+            { text: "JazzCash details setup was done in 10 seconds. Super smooth process!", name: "Tania Sheikh", city: "Faisalabad" },
+            { text: "Task daily limit notification prevents unnecessary endless clicks. Smart engineering!", name: "Joshua Hall", city: "London, UK" },
+            { text: "Bhai daily pocket money ke liye is se behter option nahi mil sakta.", name: "Danish Ramzan", city: "Sahiwal" },
+            { text: "STC Pay support makes it seamless for expats living in Kingdom.", name: "Tariq Al-Zahrani", city: "Jeddah, KSA" },
+            { text: "India NetBanking payouts option added successfully. Great service!", name: "Deepak Sharma", city: "Chandigarh, India" },
+            { text: "Bhai 25/25 task limit hit kar di hai aaj ki. Kal subah dubara login karunga!", name: "Waqar Younis", city: "Vehari" },
+            { text: "PayPal and Wise payment routes are working fine for European users.", name: "Mia Roberts", city: "Manchester, UK" },
+            { text: "Live user payout ticker gives total transparency. 5 stars from my side!", name: "Junaid Siddiqui", city: "Karachi" },
+            { text: "Easypaisa transfer details save ho gayi hain. Waiting for processing!", name: "Aleena Farooq", city: "Rawalpindi" },
+            { text: "Bhai simple alfaz mein boloon toh layout, system aur timer sab 10/10 hai!", name: "Rehan Ahmed", city: "Multan" }
+        ];
+
+        // Massive pool of 100+ International Payout Ticker Entries (provided by user)
+        const masterTickerData = [
+            { name: "Usman_Ali_62", country: "Pakistan", amount: 69.32, method: "JazzCash", time: "2 mins ago" },
+            { name: "William_C_52", country: "US", amount: 223.14, method: "USDT", time: "4 mins ago" },
+            { name: "Ayesha_Noor_81", country: "Pakistan", amount: 76.72, method: "JazzCash", time: "6 mins ago" },
+            { name: "Kashif_N_65", country: "Pakistan", amount: 125.09, method: "Bank Transfer", time: "8 mins ago" },
+            { name: "John_D_50", country: "US", amount: 387.46, method: "USDT", time: "10 mins ago" },
+            { name: "Rashid_M_95", country: "UAE", amount: 155.40, method: "Bank Transfer", time: "9 mins ago" },
+            { name: "Sana_Mir_83", country: "Pakistan", amount: 92.46, method: "Easypaisa", time: "9 mins ago" },
+            { name: "Nasser_H_53", country: "Saudi Arabia", amount: 360.84, method: "Bank Transfer", time: "12 mins ago" },
+            { name: "Danyaal_S_91", country: "Pakistan", amount: 97.98, method: "Easypaisa", time: "12 mins ago" },
+            { name: "Kashif_N_92", country: "Pakistan", amount: 96.40, method: "Bank Transfer", time: "15 mins ago" },
+            { name: "Karan_J_72", country: "India", amount: 154.12, method: "NetBanking", time: "15 mins ago" },
+            { name: "John_D_92", country: "US", amount: 156.22, method: "USDT", time: "18 mins ago" },
+            { name: "Mariam_R_43", country: "UAE", amount: 168.26, method: "Mashreq", time: "18 mins ago" },
+            { name: "Amit_S_68", country: "India", amount: 127.53, method: "Google Pay", time: "21 mins ago" },
+            { name: "Danyaal_S_21", country: "Pakistan", amount: 131.48, method: "Easypaisa", time: "21 mins ago" },
+            { name: "Zeeshan_R_40", country: "Pakistan", amount: 91.56, method: "JazzCash", time: "24 mins ago" },
+            { name: "Oliver_T_67", country: "UK", amount: 197.80, method: "PayPal", time: "24 mins ago" },
+            { name: "Zain_Abbas_54", country: "Pakistan", amount: 56.66, method: "JazzCash", time: "27 mins ago" },
+            { name: "Ananya_R_52", country: "India", amount: 194.02, method: "PayTM", time: "27 mins ago" },
+            { name: "Fatima_B_23", country: "Pakistan", amount: 89.27, method: "Bank Transfer", time: "30 mins ago" },
+            { name: "Hamza_Malik_13", country: "Pakistan", amount: 104.99, method: "Easypaisa", time: "30 mins ago" },
+            { name: "Sarah_H_79", country: "US", amount: 196.40, method: "Wise", time: "33 mins ago" },
+            { name: "Bandar_K_35", country: "Saudi Arabia", amount: 379.80, method: "Al Rajhi", time: "33 mins ago" },
+            { name: "Zain_Abbas_32", country: "Pakistan", amount: 92.48, method: "JazzCash", time: "36 mins ago" },
+            { name: "Karan_J_50", country: "India", amount: 106.63, method: "NetBanking", time: "36 mins ago" },
+            { name: "Noah_K_79", country: "UK", amount: 107.56, method: "PayPal", time: "39 mins ago" },
+            { name: "Usman_Ali_56", country: "Pakistan", amount: 49.33, method: "JazzCash", time: "41 mins ago" },
+            { name: "David_L_71", country: "US", amount: 201.12, method: "Bank Transfer", time: "43 mins ago" },
+            { name: "Charlie_B_11", country: "UK", amount: 231.06, method: "Wise", time: "45 mins ago" },
+            { name: "Ayesha_Noor_21", country: "Pakistan", amount: 69.41, method: "Easypaisa", time: "47 mins ago" },
+            { name: "Mansour_R_61", country: "Saudi Arabia", amount: 593.63, method: "STC Pay", time: "49 mins ago" },
+            { name: "Ashley_P_34", country: "US", amount: 181.72, method: "USDT", time: "51 mins ago" },
+            { name: "Jack_L_11", country: "UK", amount: 77.01, method: "Bank Transfer", time: "53 mins ago" },
+            { name: "Sana_Mir_77", country: "Pakistan", amount: 56.40, method: "JazzCash", time: "55 mins ago" },
+            { name: "Alya_B_80", country: "UAE", amount: 541.45, method: "USDT", time: "57 mins ago" },
+            { name: "Sana_Mir_71", country: "Pakistan", amount: 109.97, method: "Bank Transfer", time: "59 mins ago" },
+            { name: "Zeeshan_R_93", country: "Pakistan", amount: 91.56, method: "JazzCash", time: "1 hour ago" },
+            { name: "Hamza_Malik_48", country: "Pakistan", amount: 64.38, method: "Easypaisa", time: "1 hour ago" },
+            { name: "Deepak_C_42", country: "India", amount: 185.04, method: "UPI", time: "1 hour ago" },
+            { name: "Zeeshan_R_49", country: "Pakistan", amount: 62.35, method: "JazzCash", time: "1 hour ago" },
+            { name: "Zain_Abbas_59", country: "Pakistan", amount: 111.45, method: "Bank Transfer", time: "1 hour ago" },
+            { name: "James_B_43", country: "US", amount: 489.10, method: "Wise", time: "2 hours ago" },
+            { name: "Alya_B_82", country: "UAE", amount: 379.79, method: "PayPal", time: "2 hours ago" },
+            { name: "Kashif_N_13", country: "Pakistan", amount: 48.71, method: "Easypaisa", time: "2 hours ago" },
+            { name: "Jessica_M_82", country: "US", amount: 263.38, method: "USDT", time: "2 hours ago" },
+            { name: "Harry_W_93", country: "UK", amount: 122.95, method: "PayPal", time: "2 hours ago" },
+            { name: "Karan_J_67", country: "India", amount: 201.27, method: "PayTM", time: "3 hours ago" },
+            { name: "Zeeshan_R_39", country: "Pakistan", amount: 80.99, method: "Easypaisa", time: "3 hours ago" },
+            { name: "Ali_Haider_49", country: "Pakistan", amount: 139.11, method: "JazzCash", time: "3 hours ago" },
+            { name: "Isla_P_28", country: "UK", amount: 295.43, method: "Wise", time: "3 hours ago" },
+            { name: "Ali_Haider_37", country: "Pakistan", amount: 56.44, method: "JazzCash", time: "4 hours ago" },
+            { name: "Michael_S_74", country: "US", amount: 371.74, method: "Bank Transfer", time: "4 hours ago" },
+            { name: "Ahmed_Raza_85", country: "Pakistan", amount: 121.75, method: "JazzCash", time: "4 hours ago" },
+            { name: "Amit_S_57", country: "India", amount: 103.54, method: "PayTM", time: "4 hours ago" },
+            { name: "Ali_Haider_85", country: "Pakistan", amount: 107.03, method: "Easypaisa", time: "5 hours ago" },
+            { name: "Robert_W_91", country: "US", amount: 403.49, method: "USDT", time: "5 hours ago" },
+            { name: "Mia_D_83", country: "UK", amount: 233.16, method: "PayPal", time: "5 hours ago" },
+            { name: "Sana_Mir_73", country: "Pakistan", amount: 69.17, method: "Bank Transfer", time: "5 hours ago" },
+            { name: "Jessica_M_28", country: "US", amount: 351.46, method: "Wise", time: "6 hours ago" },
+            { name: "Ayesha_Noor_87", country: "Pakistan", amount: 111.45, method: "JazzCash", time: "6 hours ago" },
+            { name: "Zain_Abbas_55", country: "Pakistan", amount: 147.20, method: "Easypaisa", time: "6 hours ago" },
+            { name: "John_D_49", country: "US", amount: 432.55, method: "USDT", time: "7 hours ago" },
+            { name: "Sunita_B_47", country: "India", amount: 191.07, method: "UPI", time: "7 hours ago" },
+            { name: "Farhan_A_70", country: "Pakistan", amount: 45.45, method: "JazzCash", time: "7 hours ago" },
+            { name: "Kashif_N_17", country: "Pakistan", amount: 111.16, method: "Easypaisa", time: "7 hours ago" },
+            { name: "Zayad_A_43", country: "UAE", amount: 418.06, method: "Bank Transfer", time: "8 hours ago" },
+            { name: "Zain_Abbas_23", country: "Pakistan", amount: 53.79, method: "JazzCash", time: "8 hours ago" },
+            { name: "Sana_Mir_24", country: "Pakistan", amount: 59.88, method: "Bank Transfer", time: "8 hours ago" },
+            { name: "Ayesha_Noor_99", country: "Pakistan", amount: 96.08, method: "Easypaisa", time: "8 hours ago" },
+            { name: "Rohit_M_38", country: "India", amount: 144.38, method: "PayTM", time: "9 hours ago" },
+            { name: "Fatima_B_13", country: "Pakistan", amount: 145.42, method: "JazzCash", time: "9 hours ago" },
+            { name: "Oliver_T_33", country: "UK", amount: 117.92, method: "USDT", time: "9 hours ago" },
+            { name: "Zain_Abbas_14", country: "Pakistan", amount: 57.37, method: "Easypaisa", time: "9 hours ago" },
+            { name: "Ahmed_Raza_56", country: "Pakistan", amount: 128.61, method: "JazzCash", time: "10 hours ago" },
+            { name: "Kashif_N_22", country: "Pakistan", amount: 139.73, method: "Bank Transfer", time: "10 hours ago" },
+            { name: "Ashley_P_52", country: "US", amount: 181.76, method: "PayPal", time: "10 hours ago" },
+            { name: "Sultan_M_12", country: "Saudi Arabia", amount: 153.22, method: "STC Pay", time: "10 hours ago" },
+            { name: "Zeeshan_R_19", country: "Pakistan", amount: 84.14, method: "JazzCash", time: "11 hours ago" },
+            { name: "Neha_G_49", country: "India", amount: 122.95, method: "Google Pay", time: "11 hours ago" },
+            { name: "Bilal_K_51", country: "Pakistan", amount: 82.26, method: "Easypaisa", time: "11 hours ago" },
+            { name: "Ayesha_Noor_80", country: "Pakistan", amount: 143.51, method: "Bank Transfer", time: "11 hours ago" },
+            { name: "Zeeshan_R_61", country: "Pakistan", amount: 62.48, method: "JazzCash", time: "12 hours ago" },
+            { name: "Sarah_H_77", country: "US", amount: 136.03, method: "USDT", time: "12 hours ago" },
+            { name: "Charlie_B_12", country: "UK", amount: 123.67, method: "Wise", time: "12 hours ago" },
+            { name: "Zain_Abbas_68", country: "Pakistan", amount: 104.99, method: "Easypaisa", time: "12 hours ago" },
+            { name: "Hamza_Malik_26", country: "Pakistan", amount: 63.80, method: "JazzCash", time: "13 hours ago" },
+            { name: "Bandar_K_83", country: "Saudi Arabia", amount: 312.44, method: "Bank Transfer", time: "13 hours ago" },
+            { name: "Deepak_C_40", country: "India", amount: 186.06, method: "UPI", time: "13 hours ago" },
+            { name: "Kashif_N_14", country: "Pakistan", amount: 56.40, method: "JazzCash", time: "13 hours ago" },
+            { name: "Ali_Haider_48", country: "Pakistan", amount: 48.06, method: "Easypaisa", time: "14 hours ago" },
+            { name: "James_B_73", country: "US", amount: 283.42, method: "PayPal", time: "14 hours ago" },
+            { name: "Talha_M_88", country: "Pakistan", amount: 147.28, method: "Bank Transfer", time: "14 hours ago" },
+            { name: "Rahul_V_49", country: "India", amount: 147.50, method: "PayTM", time: "14 hours ago" },
+            { name: "Zain_Abbas_52", country: "Pakistan", amount: 111.45, method: "JazzCash", time: "15 hours ago" },
+            { name: "Fahad_S_47", country: "Saudi Arabia", amount: 371.49, method: "Al Rajhi", time: "15 hours ago" },
+            { name: "Zeeshan_R_99", country: "Pakistan", amount: 57.06, method: "Easypaisa", time: "15 hours ago" },
+            { name: "George_S_98", country: "UK", amount: 236.42, method: "Bank Transfer", time: "15 hours ago" },
+            { name: "Ahmed_Raza_93", country: "Pakistan", amount: 44.91, method: "JazzCash", time: "16 hours ago" },
+            { name: "Amit_S_78", country: "India", amount: 95.83, method: "Google Pay", time: "16 hours ago" },
+            { name: "Zeeshan_R_11", country: "Pakistan", amount: 96.08, method: "Easypaisa", time: "16 hours ago" },
+            { name: "Emily_J_12", country: "US", amount: 308.22, method: "USDT", time: "16 hours ago" },
+            { name: "Zain_Abbas_83", country: "Pakistan", amount: 104.99, method: "JazzCash", time: "17 hours ago" }
+        ];
+
+        // Dynamic Rotation: Load new random reviews & ticker items on every visit
+        function loadDynamicLandingContent() {
+            allTestimonials.sort(() => Math.random() - 0.5);
+            let testHtml = '';
+            for(let i=0; i<3; i++) {
+                let t = allTestimonials[i];
+                testHtml += `
+                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
+                        <div class="text-yellow-400 text-xs mb-2">★★★★★</div>
+                        <p class="text-xs text-slate-300 mb-3">"${t.text}"</p>
+                        <div class="text-[11px] font-bold text-slate-400">— ${t.name} (${t.city})</div>
+                    </div>
+                `;
+            }
+            document.getElementById('testimonials-container').innerHTML = testHtml;
+
+            const container = document.getElementById('ticker-container');
+            let tickHtml = '';
+            for(let i=0; i<3; i++) {
+                masterTickerData.sort(() => Math.random() - 0.5);
+                masterTickerData.forEach(item => {
+                    tickHtml += `
+                        <div class="flex justify-between items-center bg-slate-950/60 px-4 py-2 rounded-lg border border-slate-800/50">
+                            <span><strong class="text-yellow-400">${item.name}</strong> (${item.country})</span>
+                            <span class="text-emerald-400 font-semibold">Withdrawn $${item.amount.toFixed(2)} (${item.method})</span>
+                            <span class="text-slate-500 text-[10px]">${item.time}</span>
+                        </div>
+                    `;
+                });
+            }
+            container.innerHTML = tickHtml;
+        }
+        loadDynamicLandingContent();
+
+        let isLoginMode = true;
+        let currentUser = localStorage.getItem('rew_active') ? JSON.parse(localStorage.getItem('rew_' + localStorage.getItem('rew_active'))) : null;
+
+        if (currentUser) {
+            showDashboard();
+        }
+
+        function showAuth(mode) {
+            isLoginMode = (mode === 'login');
+            document.getElementById('landing-screen').classList.add('hidden');
+            document.getElementById('auth-screen').classList.remove('hidden');
+            document.getElementById('auth-error').classList.add('hidden');
+            switchTab(mode);
+        }
+
+        function backToLanding() {
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('landing-screen').classList.remove('hidden');
+            loadDynamicLandingContent();
+        }
+
+        function switchTab(tab) {
+            isLoginMode = (tab === 'login');
+            document.getElementById('tab-login').className = isLoginMode ? "flex-1 pb-3 font-semibold text-yellow-400 border-b-2 border-yellow-400 transition text-sm" : "flex-1 pb-3 font-semibold text-slate-400 transition text-sm";
+            document.getElementById('tab-signup').className = !isLoginMode ? "flex-1 pb-3 font-semibold text-yellow-400 border-b-2 border-yellow-400 transition text-sm" : "flex-1 pb-3 font-semibold text-slate-400 transition text-sm";
+            document.getElementById('auth-btn').innerText = isLoginMode ? "Login to Account" : "Create Account & Start";
+            document.getElementById('auth-error').classList.add('hidden');
+        }
+
+        function handleAuth(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errBox = document.getElementById('auth-error');
+
+            let saved = localStorage.getItem('rew_' + email);
+
+            if (isLoginMode) {
+                if (!saved) {
+                    errBox.innerText = "Account not found! Please Sign Up first.";
+                    errBox.classList.remove('hidden');
+                    return;
+                }
+                let userObj = JSON.parse(saved);
+                if (userObj.password !== password) {
+                    errBox.innerText = "Incorrect password! Please try again.";
+                    errBox.classList.remove('hidden');
+                    return;
+                }
+                currentUser = userObj;
+            } else {
+                if (saved) {
+                    errBox.innerText = "Email already registered! Please Login.";
+                    errBox.classList.remove('hidden');
+                    return;
+                }
+                currentUser = { 
+                    email: email, 
+                    password: password,
+                    balance: 0.00, 
+                    tasks: 0, 
+                    referrals: 0, 
+                    status: 'none'
+                };
+                localStorage.setItem('rew_' + email, JSON.stringify(currentUser));
+            }
+
+            localStorage.setItem('rew_active', email);
+            document.getElementById('auth-screen').classList.add('hidden');
+            showDashboard();
+        }
+
+        function showDashboard() {
+            document.getElementById('landing-screen').classList.add('hidden');
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('dashboard-screen').classList.remove('hidden');
+            document.getElementById('display-email').innerText = currentUser.email;
+            
+            let refCode = btoa(currentUser.email).substring(0, 8);
+            document.getElementById('ref-link').value = window.location.origin + window.location.pathname + "?ref=" + refCode;
+
+            buildTasksList();
+            updateUI();
+        }
+
+        function logout() {
+            localStorage.removeItem('rew_active');
+            location.reload();
+        }
+
+        function switchView(view) {
+            if(view === 'referral' && currentUser.tasks === 0) {
+                alert("Step 2 (Referral Program) is locked! Complete at least 1 micro-task first.");
+                return;
+            }
+            ['tasks', 'referral', 'withdraw'].forEach(v => {
+                document.getElementById('view-' + v).classList.add('hidden');
+                document.getElementById('nav-' + v).classList.remove('bg-yellow-400/15', 'text-yellow-400');
+                document.getElementById('nav-' + v).classList.add('text-slate-400', 'hover:bg-slate-800');
+            });
+            document.getElementById('view-' + view).classList.remove('hidden');
+            document.getElementById('nav-' + view).classList.remove('text-slate-400', 'hover:bg-slate-800');
+            document.getElementById('nav-' + view).classList.add('bg-yellow-400/15', 'text-yellow-400');
+        }
+
+        function buildTasksList() {
+            let container = document.getElementById('tasks-list-container');
+            let html = '';
+            for(let i=1; i<=25; i++) {
+                html += `
+                    <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl flex items-center justify-between">
+                        <div>
+                            <h3 class="font-semibold text-xs text-slate-200">Sponsored Video Ad #${i}</h3>
+                            <p class="text-[11px] text-slate-400 mt-0.5">Reward: <span class="text-yellow-400 font-bold">+$0.55</span> (1 Min Watch)</p>
+                        </div>
+                        <button id="task-btn-${i}" onclick="startTask(0.55, ${i})" class="task-btn bg-yellow-400 hover:bg-yellow-500 text-slate-950 font-bold text-xs px-3 py-1.5 rounded-lg transition shadow">Start Task</button>
+                    </div>
+                `;
+            }
+            container.innerHTML = html;
+        }
+
+        function startTask(amount, taskId) {
+            if (isTaskRunning) {
+                alert("Please wait! You can only complete one task at a time. Finish the current timer first.");
+                return;
+            }
+
+            window.open(ADSTERRA_LINK, '_blank');
+            isTaskRunning = true;
+
+            const allTaskBtns = document.querySelectorAll('.task-btn');
+            allTaskBtns.forEach(btn => btn.disabled = true);
+
+            let timerBox = document.getElementById('task-timer-box');
+            let countdownEl = document.getElementById('timer-countdown');
+            let currentBtn = document.getElementById(`task-btn-${taskId}`);
+            
+            timerBox.classList.remove('hidden');
+            currentBtn.innerText = "Running...";
+
+            let timeLeft = 60;
+            countdownEl.innerText = timeLeft + "s";
+
+            let timerInterval = setInterval(() => {
+                timeLeft--;
+                countdownEl.innerText = timeLeft + "s";
+                if(timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timerBox.classList.add('hidden');
+                    isTaskRunning = false;
+                    
+                    currentUser.balance += amount;
+                    currentUser.tasks += 1;
+                    saveUserData();
+                    updateUI();
+
+                    currentBtn.innerText = "Completed ✓";
+                    currentBtn.className = "bg-emerald-500/20 text-emerald-400 font-bold text-xs px-3 py-1.5 rounded-lg cursor-default";
+
+                    allTaskBtns.forEach(btn => {
+                        if(!btn.innerText.includes("Completed")) {
+                            btn.disabled = false;
+                        }
+                    });
+
+                    if(currentUser.tasks >= 1) {
+                        let step2Btn = document.getElementById('nav-referral');
+                        step2Btn.disabled = false;
+                        step2Btn.classList.remove('text-slate-500', 'bg-slate-950', 'cursor-not-allowed');
+                        step2Btn.classList.add('text-slate-400', 'hover:bg-slate-800');
+                        document.getElementById('step2-icon').className = "fa-solid fa-users mr-2 text-yellow-400";
+                        document.getElementById('nav-referral').innerHTML = `<i class="fa-solid fa-users mr-2 text-yellow-400"></i> Step 2 (Referrals)`;
+                        document.getElementById('ref-box-display').classList.remove('hidden');
+                    }
+
+                    alert(`Task #${taskId} verified successfully! +$${amount} added to your balance.`);
+                }
+            }, 1000);
+        }
+
+        function changeCurrency() {
+            currentCurrency = document.getElementById('currency-select').value;
+            updateUI();
+        }
+
+        function copyRefLink() {
+            let copyText = document.getElementById("ref-link");
+            copyText.select();
+            navigator.clipboard.writeText(copyText.value);
+            alert("Referral link copied to clipboard!");
+        }
+
+        function updateUI() {
+            let rate = rates[currentCurrency];
+            let sym = symbols[currentCurrency];
+            let convertedBal = (currentUser.balance * rate).toFixed(2);
+
+            document.getElementById('user-balance').innerText = `${sym}${convertedBal}`;
+            document.getElementById('withdraw-current').innerText = `${sym}${convertedBal}`;
+            document.getElementById('tasks-count').innerText = `${currentUser.tasks} / 25`;
+            document.getElementById('referral-count-display').innerText = `${currentUser.referrals} / 10`;
+            document.getElementById('ref-progress-text').innerText = `${currentUser.referrals} / 10`;
+
+            let percent = (currentUser.balance / 50) * 100;
+            if (percent > 100) percent = 100;
+            document.getElementById('progress-bar').style.width = percent + '%';
+
+            if(currentUser.tasks >= 1) {
+                let step2Btn = document.getElementById('nav-referral');
+                step2Btn.disabled = false;
+                step2Btn.classList.remove('text-slate-500', 'bg-slate-950', 'cursor-not-allowed');
+                step2Btn.classList.add('text-slate-400', 'hover:bg-slate-800');
+                document.getElementById('step2-icon').className = "fa-solid fa-users mr-2 text-yellow-400";
+                document.getElementById('nav-referral').innerHTML = `<i class="fa-solid fa-users mr-2 text-yellow-400"></i> Step 2 (Referrals)`;
+                document.getElementById('ref-box-display').classList.remove('hidden');
+            }
+
+            let statusBox = document.getElementById('withdraw-status-box');
+            if (currentUser.status === 'pending') {
+                statusBox.className = "mb-6 p-4 rounded-xl border bg-yellow-500/10 border-yellow-500/30 text-yellow-400 text-xs";
+                statusBox.innerHTML = `<i class="fa-solid fa-clock mr-1"></i> <b>Status: Pending Review.</b> Your payout request is submitted and under process (3-5 business days).`;
+                statusBox.classList.remove('hidden');
+            }
+        }
+
+        function requestWithdraw(e) {
+            e.preventDefault();
+            if (currentUser.balance < 50) {
+                alert("Insufficient balance! Minimum withdrawal limit is $50.00.");
+                return;
+            }
+            if (currentUser.referrals < 10) {
+                alert(`Withdrawal Locked!\nYou need at least 10 referrals in Step 2 to withdraw your funds.\nCurrent Referrals: ${currentUser.referrals}/10`);
+                switchView('referral');
+                return;
+            }
+            currentUser.status = 'pending';
+            saveUserData();
+            updateUI();
+            alert("Withdrawal request submitted successfully! Your payout is now in Pending status.");
+        }
+
+        function saveUserData() {
+            localStorage.setItem('rew_' + currentUser.email, JSON.stringify(currentUser));
+        }
+    </script>
+</body>
+</html>
